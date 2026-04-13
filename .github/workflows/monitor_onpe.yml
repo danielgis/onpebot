@@ -32,7 +32,7 @@ jobs:
           # Aquí es donde el Action lee tus Secrets de GitHub
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: python vot-onpe.py
+        run: python voto-onpe.py
 
       - name: Persistir cambios en el estado
         run: |
