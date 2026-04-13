@@ -1,0 +1,44 @@
+name: Monitor ONPE 10min
+
+on:
+  schedule:
+    # Se ejecuta cada 10 minutos
+    - cron: '*/10 * * * *'
+  workflow_dispatch: # Botón para ejecutarlo manualmente
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # Permisos necesarios para guardar el archivo last_state.txt
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Instalar dependencias
+        run: pip install requests
+
+      - name: Ejecutar script de monitoreo
+        env:
+          # Aquí es donde el Action lee tus Secrets de GitHub
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python vot-onpe.py
+
+      - name: Persistir cambios en el estado
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          # Verificamos si last_state.txt existe antes de intentar agregarlo
+          if [ -f last_state.txt ]; then
+            git add last_state.txt
+            git commit -m "Update ONPE state [skip ci]" || echo "No hay cambios para commitear"
+            git push
+          fi
