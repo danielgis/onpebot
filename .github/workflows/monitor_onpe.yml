@@ -5,7 +5,9 @@ on:
     # Se ejecuta cada 10 minutos
     - cron: '*/10 * * * *'
   workflow_dispatch: # Botón para ejecutarlo manualmente
-
+# Agregamos esto aquí arriba para que afecte a todo el proceso
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 jobs:
   build:
     runs-on: ubuntu-latest
